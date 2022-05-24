@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1652880803 source:c:\users\natanael\desktop\wordlle_project\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"dicionario.h"
+
+1652880490 c:\users\natanael\desktop\wordlle_project\dicionario.h
+
