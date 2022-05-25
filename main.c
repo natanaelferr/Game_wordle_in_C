@@ -9,7 +9,7 @@
 void drawWord(char hasWord[]);
 bool dictionaryHas(char userWord[]);
 bool youWin(char userWord[]);
-void registerInputs(char userWord[], char chart[][6], int chartCounter);
+void mostraPalavras(int attempt, char* wordAttempts[][6], char userWord[]);
 
 
 char mainWord[6];
@@ -59,14 +59,8 @@ int main(void)
                 while(isGaming){
                     printf(BRANCO_COR "\nTentativas restantes: " VERMELHO_COR "%d\n", attempts);
                     printf("\n");
-                    printf(mainWord);
+                    printf("Palavra certa para teste: %s", mainWord);
                     printf("\n" BRANCO_COR);
-                    for(int o = 0;o < 6;o++){
-                        for(int l = 0;l < 10;l++){
-                            printf("%c", chart[o][l]);
-                        }
-                        printf("\n");
-                    }
                     printf("\n");
                     printf("Digite aqui seu palpite: " VERMELHO_COR);
                     scanf("%s", &userOpinion);
@@ -82,7 +76,8 @@ int main(void)
                         }else{
                             if(attempts > 1){//entra aqui se ainda n venceu e se tem tentativa sobrando
                                 attempts--; //entrou já diminui uma tentativa
-                                
+                                mostraPalavras(attempts, chart, userOpinion);//imprime as palavras válidas que o usuário ja digitou
+
 
                             }else{
                                 printf("\nVoce perdeu!\n");
@@ -101,10 +96,28 @@ int main(void)
     } 
 }
 
+//imprime na tela as palavras que o usuário ja digitou
+                    //tentativas      palavras tentadas      palavra do usuario
+void mostraPalavras(int attempt, char *wordAttempts[][6], char userWord[]){
+    printf("Palavra do usuario: %s\n", userWord);
+    printf("Tentativas restantes: %d\n", attempt);
+    for(int i = 0; i <= 5; i++){
+        if(i >= 0 && i < 5){
+            wordAttempts[6 - attempt][i] = userWord[i];
+            printf("Caractere %d: %c  ", i, wordAttempts[6 - attempt][i]);
+        }else{
+            wordAttempts[6 - attempt][i] = '\0';
+        }    
+    }
+
+    for(int i = 0; i < 6; i++){
+        printf("%s\n", wordAttempts[i][0]);
+    }
+    
+}
 
 
-
-
+//verifica se o usuário já venceu
 bool youWin(char userWord[]){
     for(int i = 0; i <= 5; i++){
         if(userWord[i] == mainWord[i]){
@@ -119,6 +132,7 @@ bool youWin(char userWord[]){
 }
 
 
+//verifica se a palavra existe no dicionário
 bool dictionaryHas(char userWord[6]){
     int escopoInicial = 0;
     int escopoFinal = DICIONARIO_TAM-1;
@@ -146,6 +160,7 @@ bool dictionaryHas(char userWord[6]){
         }
     }
 }
+
 
 //sorteia a palavra e adiciona a um vetor
 void drawWord(char hasWord[]){
