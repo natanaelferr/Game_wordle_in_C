@@ -105,14 +105,7 @@ int main(void)
 
 
 //função que emite um vetor com indicações de cores
-void vetorCores(int colors[], char userWord[], char mainWord[], int attempt){
-    // int mainDeleted[5];//posições que não se conta no loop
-    // int mainControl = 0;
-    // int userDeleted[5];//posições que não se conta no loop
-    // int userControl = 0;
-    // int qtdIgual = 0;
-    // int posicoes[5][2];
-    
+void vetorCores(int colors[], char userWord[], char mainWord[], int attempt){   
     int countPos = 0;
     int outPosMain[5] = {7,7,7,7,7};
     int outPosUser[5] = {7,7,7,7,7};
@@ -136,22 +129,39 @@ void vetorCores(int colors[], char userWord[], char mainWord[], int attempt){
     //outPosUser[5]
 
 
-    for(int i = 0; i < 5; i++){
-        if(verificaDentro(i, outPosMain)){i++;}//se está no vetor excluidas
-        showVector(outPosMain);//1111111111111111111111111
-        for(int l = 0; l < 5; l++){
-            if(verificaDentro(l, outPosUser)){l++;}//se está no vetor de excluidas
-            showVector(outPosUser);//2222222222222222222222222222222222
-            if(userWord[l] == mainWord[i] && l != i){
-                colors[l] = 1;
-                outPosMain[countPos] = i;
-                outPosUser[countPos] = l;
-                countPos++;
-            }else{
-                l++;
+
+    for(int i=0;i<5;i++){
+        if(colors[i] == 0 || colors[i] > 3){
+            for(int l=0;l < 5;l++){
+                if(colors[i] == 0 || colors[i] > 2){
+                    if(userWord[l] == mainWord[i] && colors[l] != 2){
+                        colors[l] = 1;
+                    }
+                }else{
+                    l++;
+                }
             }
+        }else{
+            i++;
         }
     }
+
+    // for(int i = 0; i < 5; i++){
+    //     if(verificaDentro(i, outPosMain)){i++;}//se está no vetor excluidas
+    //     showVector(outPosMain);//1111111111111111111111111
+    //     for(int l = 0; l < 5; l++){
+    //         if(verificaDentro(l, outPosUser)){l++;}//se está no vetor de excluidas
+    //         showVector(outPosUser);//2222222222222222222222222222222222
+    //         if(userWord[l] == mainWord[i] && l != i){
+    //             colors[l] = 1;
+    //             outPosMain[countPos] = i;
+    //             outPosUser[countPos] = l;
+    //             countPos++;
+    //         }else{
+    //             l++;
+    //         }
+    //     }
+    // }
     showVector(colors);//3333333333333333333333333333333
 }
 
@@ -232,6 +242,7 @@ for (i = 0; dicionario[index][i] != '\0'; i++){
     hasWord[i]='\0';
 }
 
+
 //verifica se n esta dentro de box
 bool verificaDentro(int n, int box[]){
         for(int i = 0;i < 5;i++){
@@ -242,6 +253,7 @@ bool verificaDentro(int n, int box[]){
             }
         }
     }
+
 
 //imprime um vetor na tela
 void showVector(int vet[]){
