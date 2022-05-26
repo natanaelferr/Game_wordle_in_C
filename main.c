@@ -6,11 +6,13 @@
 #include "dicionario.h"
 
 
-void drawWord(char hasWord[]);
-bool dictionaryHas(char userWord[]);
-bool youWin(char userWord[]);
-void mostraPalavras(int attempt, char* wordAttempts[][6], char userWord[]);
-
+bool youWin(char []);
+void drawWord(char []);
+void showVector(int []);
+bool dictionaryHas(char []);
+bool verificaDentro(int,int []);
+void guardaPalavras(int , char *[][6], char []);
+void vetorCores(int [], char [], char [], int);
 
 char mainWord[6];
 
@@ -75,9 +77,14 @@ int main(void)
                             isGaming = false;
                         }else{
                             if(attempts > 1){//entra aqui se ainda n venceu e se tem tentativa sobrando
-                                attempts--; //entrou já diminui uma tentativa
-                                mostraPalavras(attempts, chart, userOpinion);//imprime as palavras válidas que o usuário ja digitou
+                                guardaPalavras(attempts, &chart, userOpinion);//imprime as palavras válidas que o usuário ja digitou
+                                vetorCores(colors, userOpinion, mainWord, attempts);
 
+                                for(int i=0;i<5;i++){
+                                    printf("%d ",colors[i]);
+                                }
+                                attempts--; // diminui uma tentativa
+                                
 
                             }else{
                                 printf("\nVoce perdeu!\n");
@@ -96,22 +103,71 @@ int main(void)
     } 
 }
 
-//imprime na tela as palavras que o usuário ja digitou
+
+//função que emite um vetor com indicações de cores
+void vetorCores(int colors[], char userWord[], char mainWord[], int attempt){
+    // int mainDeleted[5];//posições que não se conta no loop
+    // int mainControl = 0;
+    // int userDeleted[5];//posições que não se conta no loop
+    // int userControl = 0;
+    // int qtdIgual = 0;
+    // int posicoes[5][2];
+    
+    int countPos = 0;
+    int outPosMain[5] = {7,7,7,7,7};
+    int outPosUser[5] = {7,7,7,7,7};
+    
+    //ok
+    for(int i = 0; i < 5; i++){
+        if(userWord[i] == mainWord[i]){
+            colors[i] = 2;
+            outPosMain[countPos] = i;
+            outPosUser[countPos] = i;
+            countPos++;
+        }
+        if(userWord[i] != mainWord[i]){
+            colors[i] = 0;
+        }
+    }
+
+
+    //countPos
+    //outPosMain[5]
+    //outPosUser[5]
+
+
+    for(int i = 0; i < 5; i++){
+        if(verificaDentro(i, outPosMain)){i++;}//se está no vetor excluidas
+        showVector(outPosMain);//1111111111111111111111111
+        for(int l = 0; l < 5; l++){
+            if(verificaDentro(l, outPosUser)){l++;}//se está no vetor de excluidas
+            showVector(outPosUser);//2222222222222222222222222222222222
+            if(userWord[l] == mainWord[i] && l != i){
+                colors[l] = 1;
+                outPosMain[countPos] = i;
+                outPosUser[countPos] = l;
+                countPos++;
+            }else{
+                l++;
+            }
+        }
+    }
+    showVector(colors);//3333333333333333333333333333333
+}
+
+
+//guarda as palavras que o usuário ja digitou
                     //tentativas      palavras tentadas      palavra do usuario
-void mostraPalavras(int attempt, char *wordAttempts[][6], char userWord[]){
-    printf("Palavra do usuario: %s\n", userWord);
-    printf("Tentativas restantes: %d\n", attempt);
+void guardaPalavras(int attempt, char *wordAttempts[][6], char userWord[]){
+    //printf("Palavra do usuario: %s\n", userWord);
+    //printf("Tentativas restantes: %d\n", attempt);
     for(int i = 0; i <= 5; i++){
         if(i >= 0 && i < 5){
             wordAttempts[6 - attempt][i] = userWord[i];
-            printf("Caractere %d: %c  ", i, wordAttempts[6 - attempt][i]);
+            //printf("Caractere [%d][%d]: %c \n", 6 - attempt,i, wordAttempts[6 - attempt][i]);
         }else{
-            wordAttempts[6 - attempt][i] = '\0';
+            wordAttempts[6 - attempt][5] = '\0';
         }    
-    }
-
-    for(int i = 0; i < 6; i++){
-        printf("%s\n", wordAttempts[i][0]);
     }
     
 }
@@ -119,12 +175,12 @@ void mostraPalavras(int attempt, char *wordAttempts[][6], char userWord[]){
 
 //verifica se o usuário já venceu
 bool youWin(char userWord[]){
-    for(int i = 0; i <= 5; i++){
+    for(int i = 0; i < 5; i++){
         if(userWord[i] == mainWord[i]){
-            i += 1;
-            if(mainWord[i] == userWord[i] && i == 5){
+            if(mainWord[i] == userWord[i] && i == 4){
                 return true;
             }
+            i++;
         }else{
             return false;
         }
@@ -174,4 +230,23 @@ for (i = 0; dicionario[index][i] != '\0'; i++){
     hasWord[i] = dicionario[index][i];
 }
     hasWord[i]='\0';
+}
+
+//verifica se n esta dentro de box
+bool verificaDentro(int n, int box[]){
+        for(int i = 0;i < 5;i++){
+            if(n == box[i]){
+                return true;
+            }if(i == 4 && n != box[i]){
+                return false;
+            }
+        }
+    }
+
+//imprime um vetor na tela
+void showVector(int vet[]){
+    for(int i=0;i<5;i++){
+        printf("vet[%d]: %d  ",i, vet[i]);
+    }
+    printf("\n\n");
 }
