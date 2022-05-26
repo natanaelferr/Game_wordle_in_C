@@ -130,21 +130,47 @@ void vetorCores(int colors[], char userWord[], char mainWord[], int attempt){
 
 
 
+
+
+
+
     for(int i=0;i<5;i++){
-        if(colors[i] == 0 || colors[i] > 3){
-            for(int l=0;l < 5;l++){
-                if(colors[i] == 0 || colors[i] > 2){
-                    if(userWord[l] == mainWord[i] && colors[l] != 2){
-                        colors[l] = 1;
-                    }
-                }else{
-                    l++;
-                }
+        for(int l=0;l < 5;l++){
+            if(mainWord[i] == userWord[i] && i != l){
+                colors[l] = 1;
+            }else if(mainWord[i] != userWord[i]){
+                l++;
+            }else{
+                l++;
             }
-        }else{
-            i++;
         }
     }
+    
+
+
+
+
+
+
+
+
+    // for(int i=0;i<5;i++){
+    //     if(colors[i] != 1 && colors[i] != 2){
+    //         for(int l=0;l < 5;l++){
+    //             if(colors[i] != 1 && colors[i] != 2){
+    //                 if(mainWord[i] == userWord[i] && i != l){
+    //                     colors[l] = 1;
+    //                 }else if(mainWord[i] != userWord[i]){
+    //                     l++;
+    //                 }
+    //             }else{
+    //                 l++;
+    //             }
+    //         }
+    //     }else{
+    //         i++;
+    //     }
+    // }
 
     // for(int i = 0; i < 5; i++){
     //     if(verificaDentro(i, outPosMain)){i++;}//se está no vetor excluidas
