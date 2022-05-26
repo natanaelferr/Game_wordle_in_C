@@ -13,6 +13,7 @@ bool dictionaryHas(char []);
 bool verificaDentro(int,int []);
 void guardaPalavras(int , char *[][6], char []);
 void vetorCores(int [], char [], char [], int);
+void guardaVetorCores(int [], int [][5], int);
 
 char mainWord[6];
 
@@ -47,16 +48,17 @@ int main(void)
             if(menuOption > 3 && menuOption < 1){printf(VERMELHO_COR "Entrada Invalida!" RESET_COR);}
             //quando a opção 1 é escolhida
             if(menuOption == 1 ){
-                
                 drawWord(mainWord);             //sorteia
                 bool isGaming = true;
-                int attempts = 6;               //numero de tentativas restantes, inicia o jogo com 6
+                int attempts = 6;  
+                int userCount = 0;          //numero de tentativas restantes, inicia o jogo com 6
 
                 char userOpinion[6];            //palpite do usuario
                 //este vetor possui as letras da palavra e os espaços 
                 char *chart[7][6];
                 int  colors[5];                 //vetor de indicação de cores para 
-                
+                int allColors[6][5];
+
                 //aqui entra no loop das tentativas do jogo
                 while(isGaming){
                     printf(BRANCO_COR "\nTentativas restantes: " VERMELHO_COR "%d\n", attempts);
@@ -66,10 +68,11 @@ int main(void)
                     printf("\n");
                     printf("Digite aqui seu palpite: " VERMELHO_COR);
                     scanf("%s", &userOpinion);
+                    printf("\n");
                     fflush(stdin);
+
                     
-
-
+                    userCount++;
                     //verifica se a palavra existe no dicionario
                     if(dictionaryHas(userOpinion)){
                         if(youWin(userOpinion)){
@@ -79,11 +82,13 @@ int main(void)
                             if(attempts > 1){//entra aqui se ainda n venceu e se tem tentativa sobrando
                                 guardaPalavras(attempts, &chart, userOpinion);//imprime as palavras válidas que o usuário ja digitou
                                 vetorCores(colors, userOpinion, mainWord, attempts);
+                                guardaVetorCores(colors, allColors, attempts);
 
-                                for(int i=0;i<5;i++){
-                                    printf("%d ",colors[i]);
+                                for(int i = 0;i < 5;i++){
+                                    printf("%d ", allColors[userCount][i]);
                                 }
-                                attempts--; // diminui uma tentativa
+                                userCount += 1;
+                            attempts--; // diminui uma tentativa
                                 
 
                             }else{
@@ -104,53 +109,63 @@ int main(void)
 }
 
 
+void guardaVetorCores(int colors[], int allColors[][5], int attempt){
+    for(int i=0;i < 6 - attempt;i++){
+        for(int j=0;j < 5;j++){
+            allColors[i][j] = colors[j];
+        }
+    }
+}
+
+
 //função que emite um vetor com indicações de cores
 void vetorCores(int colors[], char userWord[], char mainWord[], int attempt){   
-    int countPos = 0;
-    int outPosMain[5] = {7,7,7,7,7};
-    int outPosUser[5] = {7,7,7,7,7};
-    
     //ok
     for(int i = 0; i < 5; i++){
         if(userWord[i] == mainWord[i]){
             colors[i] = 2;
-            outPosMain[countPos] = i;
-            outPosUser[countPos] = i;
-            countPos++;
-        }
-        if(userWord[i] != mainWord[i]){
+        }else{
             colors[i] = 0;
         }
     }
+    //printf("");
+    //showVector(colors);
 
-
-    //countPos
-    //outPosMain[5]
-    //outPosUser[5]
-
-
-
-
-
-
-
+    //printf("Entrou no loop\n");
+    //showVector(colors);
     for(int i=0;i<5;i++){
+        //printf("\ni = %d;  \n", i);
         for(int l=0;l < 5;l++){
-            if(mainWord[i] == userWord[i] && i != l){
+            //printf("\nentra no for l\n");
+            //printf("i = %d;  l = %d;",i, l);
+            //printf("\nmainWord[i] = %c; userWord[l] = %c;\n",  mainWord[i], userWord[l]);
+            //showVector(colors);
+            //getch();
+
+            if(mainWord[i] == userWord[l] && i != l && colors[l] != 2 && colors[i] != 2){
+                //printf("\nmainWord[i]: %c e igual a userWord[l]:  entao: %c\n", mainWord[i], userWord[l]);
+                //showVector(colors);
+                //getch();
                 colors[l] = 1;
-            }else if(mainWord[i] != userWord[i]){
-                l++;
+                //printf("colors[%d] = %d", l, colors[l]);
+
             }else{
-                l++;
+                //printf("\nmainWord[i]: %c nao e igual a userWord[l]: %c entao: l++\n",mainWord[i], userWord[l]);
+                //showVector(colors);
+                //getch();
+                continue;
             }
         }
     }
-    
 
 
 
 
-
+    //pega a mainWord
+    //ve quantas vezes cada letra se repete na mainWord e salva a 
+    //ve quantas vezes cada letra se repete na userWord
+    //ve se o numero de vezes na userWord é maior que na mainWord
+    //se for verifica se os espaços que se repete ja tem o n 2
 
 
 
@@ -188,7 +203,7 @@ void vetorCores(int colors[], char userWord[], char mainWord[], int attempt){
     //         }
     //     }
     // }
-    showVector(colors);//3333333333333333333333333333333
+    //showVector(colors);//3333333333333333333333333333333
 }
 
 
@@ -211,16 +226,28 @@ void guardaPalavras(int attempt, char *wordAttempts[][6], char userWord[]){
 
 //verifica se o usuário já venceu
 bool youWin(char userWord[]){
-    for(int i = 0; i < 5; i++){
-        if(userWord[i] == mainWord[i]){
-            if(mainWord[i] == userWord[i] && i == 4){
-                return true;
-            }
-            i++;
-        }else{
-            return false;
-        }
-    } 
+    if(
+        userWord[0] == mainWord[0]  &&
+        userWord[1] == mainWord[1]  &&
+        userWord[2] == mainWord[2]  &&
+        userWord[3] == mainWord[3]  &&
+        userWord[4] == mainWord[4]
+    ){
+        return true;
+    }else{
+        return false;
+    }
+
+    // for(int i = 0; i < 5; i++){
+    //     if(userWord[i] == mainWord[i]){
+    //         if(mainWord[i] == userWord[i] && i == 4){
+    //             return true;
+    //         }
+    //         i++;
+    //     }else{
+    //         return false;
+    //     }
+    // }
 }
 
 
